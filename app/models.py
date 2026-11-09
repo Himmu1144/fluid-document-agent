@@ -5,7 +5,7 @@ that doesn't exist, or has no tasks, is rejected at the edge instead of failing 
 """
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 # The tools the planner may choose from (implemented in app/tools.py).
 ToolName = Literal["write_section", "make_table", "lookup_mock_data", "calculate"]
@@ -34,12 +34,20 @@ class Task(BaseModel):
 
 class Plan(BaseModel):
     """What the planner decides before doing anything."""
+    is_document_request: bool = Field(default=True, description="False if the request is not asking for a business document")
+    decline_reason: str = Field(default="", description="If not a document request: one polite sentence saying what this agent can do instead")
     document_type: str = Field(description="e.g. Meeting minutes, Project proposal, SOP")
     title: str
     audience: str
     assumptions: list[str] = Field(default_factory=list, description="Gaps in the request, filled with stated assumptions")
     conflicts: list[str] = Field(default_factory=list, description="Requirements that can't all be met, and how they're handled")
-    tasks: list[Task] = Field(min_length=2, max_length=10)
+    tasks: list[Task] = Field(default_factory=list, max_length=10)
+
+    @model_validator(mode="after")
+    def tasks_for_documents(self) -> "Plan":
+        if self.is_document_request and len(self.tasks) < 2:
+            raise ValueError("a document plan needs at least 2 tasks")
+        return self
 
 
 class Table(BaseModel):

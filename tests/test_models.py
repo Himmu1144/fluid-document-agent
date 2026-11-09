@@ -24,3 +24,9 @@ def test_plans_with_no_tasks_or_unknown_tools_are_rejected(bad):
 def test_requests_must_be_meaningful(text):
     with pytest.raises(ValidationError):
         AgentRequest(request=text)
+
+
+def test_a_declined_request_needs_no_tasks():
+    p = Plan.model_validate({"is_document_request": False, "decline_reason": "I write business documents.",
+                             "document_type": "-", "title": "-", "audience": "-"})
+    assert not p.is_document_request and p.tasks == []

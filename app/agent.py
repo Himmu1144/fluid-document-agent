@@ -7,20 +7,31 @@ import uuid
 from app import config
 from app.docx_writer import write_docx
 from app.executor import execute
-from app.models import AgentResponse, SelfCheck
+from app.models import AgentResponse, SelfCheck, Task
+from app.tools import lookup_mock_data
 from app.planner import make_plan
 from app.reviewer import self_check
 
 log = logging.getLogger("agent")
 
 
+class NotADocumentRequest(ValueError):
+    """The request isn't asking for a document; the agent declines instead of inventing one."""
+
+
 def run(request: str) -> AgentResponse:
     started = time.perf_counter()
     log.info("request: %s", request)
 
-    plan = make_plan(request)                                        # 1. its own TODO list
+    records = lookup_mock_data(Task(id=0, title="", tool="lookup_mock_data", instruction=""), request)
+    plan = make_plan(request, records)                               # 1. its own TODO list, with the facts in view
+    if not plan.is_document_request:
+        raise NotADocumentRequest(plan.decline_reason or "This agent writes business documents.")
     sections, facts, reports = execute(request, plan)                # 2. each step, with tools
-    sections, check = self_check(request, plan, facts, sections, reports)  # 3. review and fix its own draft
+    if config.SELF_CHECK:
+        sections, check = self_check(request, plan, facts, sections, reports)  # 3. review and fix its own draft
+    else:
+        check = SelfCheck(passed=False, issues=["Self-check switched off (SELF_CHECK=0)."])
 
     doc_id = uuid.uuid4().hex[:12]
     slug = re.sub(r"[^a-z0-9]+", "-", plan.title.lower()).strip("-")[:60] or "document"

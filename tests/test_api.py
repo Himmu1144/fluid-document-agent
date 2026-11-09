@@ -30,3 +30,11 @@ def test_a_successful_run_returns_a_full_download_link(monkeypatch):
 def test_only_generated_document_ids_can_be_downloaded():
     assert client.get("/documents/..%2F..%2Fetc%2Fpasswd").status_code == 404
     assert client.get("/documents/ffffffffffff").status_code == 404
+
+
+def test_a_non_document_request_is_declined_with_a_422(monkeypatch):
+    def decline(_):
+        raise api.agent.NotADocumentRequest("I write business documents; try asking for a report.")
+    monkeypatch.setattr(api.agent, "run", decline)
+    r = client.post("/agent", json={"request": "What's the weather in Mumbai tomorrow?"})
+    assert r.status_code == 422 and "Not a document request" in r.text

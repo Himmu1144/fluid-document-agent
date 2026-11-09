@@ -23,5 +23,12 @@ LLM_ORDER = [p.strip() for p in os.getenv("LLM_ORDER", "groq,gemini").split(",")
 # A model call that takes longer than this is abandoned and the next model is tried.
 LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "30"))
 
+# The self-check (the agent's one improvement) can be switched off, so the eval can measure what it's worth.
+SELF_CHECK = os.getenv("SELF_CHECK", "1") != "0"
+
+# The "how this document was produced" appendix: off by default (a client-facing document shouldn't carry
+# the agent's internals; the API response already has the task list and self-check).
+INCLUDE_APPENDIX = os.getenv("INCLUDE_APPENDIX", "0") == "1"
+
 # For testing the fallback: e.g. SKIP_PROVIDERS=gemini makes Groq answer.
 SKIP_PROVIDERS = {p.strip() for p in os.getenv("SKIP_PROVIDERS", "").split(",") if p.strip()}

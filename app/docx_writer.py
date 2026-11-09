@@ -14,6 +14,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor, Cm
 
+from app import config
 from app.models import Plan, Section, SelfCheck, Table, TaskReport
 
 INK = RGBColor(0x1F, 0x29, 0x37)
@@ -46,7 +47,8 @@ def write_docx(path: Path, plan: Plan, sections: list[Section], reports: list[Ta
             for c in plan.conflicts:
                 doc.add_paragraph(c, style="List Bullet")
 
-    _appendix(doc, reports, check)
+    if config.INCLUDE_APPENDIX:
+        _appendix(doc, reports, check)
     _footer(doc)
     doc.save(path)
     return path

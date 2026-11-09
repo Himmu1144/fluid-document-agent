@@ -43,7 +43,7 @@ def health() -> dict[str, str]:
 
 
 @app.post("/agent", response_model=AgentResponse, responses={
-    422: {"description": "The request is missing, too short or too long"},
+    422: {"description": "The request is missing, too short or too long, or isn't asking for a document"},
     502: {"description": "The model kept returning output that doesn't fit the expected format"},
     503: {"description": "No language model is available right now (all free tiers busy or down)"},
 })
@@ -52,6 +52,8 @@ def run_agent(http: Request, body: AgentRequest = Body(openapi_examples=EXAMPLES
     conflicts, the self-check with before/after for each fix, and a link to download the document."""
     try:
         result = agent.run(body.request)
+    except agent.NotADocumentRequest as exc:
+        raise HTTPException(422, f"Not a document request: {exc}") from exc
     except LLMError as exc:
         raise HTTPException(503, "No language model is available right now; please try again in a minute.") from exc
     except ValidationError as exc:
