@@ -55,6 +55,19 @@ class Section(BaseModel):
     table: Table | None = None
 
 
+class ReviewIssue(BaseModel):
+    """One problem the reviewer found, and what to do about it."""
+    problem: str = Field(description="What is missing or wrong, quoting the request where relevant")
+    action: Literal["add_section", "revise_section"]
+    heading: str = Field(description="The section to add, or the exact heading of the section to revise")
+    instruction: str = Field(description="What the new or revised section must contain")
+
+
+class Review(BaseModel):
+    passed: bool = Field(description="True only if the draft fully answers the request and is internally consistent")
+    issues: list[ReviewIssue] = Field(default_factory=list, max_length=5)
+
+
 class SelfCheck(BaseModel):
     """The reviewer's verdict on the draft (the agent's one engineering improvement)."""
     passed: bool
