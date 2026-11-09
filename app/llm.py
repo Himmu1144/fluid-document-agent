@@ -1,6 +1,7 @@
 """One way to call a language model, whichever provider answers.
 
-Gemini (free tier) is tried first; if it fails or is rate-limited, Groq answers instead.
+Providers are tried in the order set by LLM_ORDER (default Gemini, then Groq); if one fails or is
+rate-limited, the next answers.
 `complete_json` also checks the answer against a Pydantic model and, if it doesn't fit,
 asks once more with the error attached, so the rest of the agent only ever sees valid data.
 """
@@ -48,17 +49,17 @@ def _groq(system: str, prompt: str, want_json: bool) -> str:
     return reply.choices[0].message.content or ""
 
 
-PROVIDERS = [("gemini", _gemini), ("groq", _groq)]
+PROVIDERS = {"gemini": _gemini, "groq": _groq}
 
 
 def complete(system: str, prompt: str, want_json: bool = False) -> str:
     """The first provider that answers wins; each failure is logged, not hidden."""
     errors = []
-    for name, call in PROVIDERS:
-        if name in config.SKIP_PROVIDERS:
+    for name in config.LLM_ORDER:
+        if name in config.SKIP_PROVIDERS or name not in PROVIDERS:
             continue
         try:
-            text = call(system, prompt, want_json)
+            text = PROVIDERS[name](system, prompt, want_json)
             if text.strip():
                 log.info("llm: answered by %s", name)
                 return text
