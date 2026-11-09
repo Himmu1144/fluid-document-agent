@@ -33,6 +33,9 @@ def build_context(request: str, plan: Plan, facts: dict, sections: list[Section]
             body = s.text[:SECTION_PREVIEW]
             if s.table:
                 body += f"\n[table: {', '.join(s.table.columns)}; {len(s.table.rows)} rows]"
+                last = s.table.rows[-1] if s.table.rows else []
+                if last and str(last[0]).lower().startswith("total"):  # later sections must quote the real total
+                    body += f"\n[{' | '.join(c for c in last if c)}]"
             written.append(f"## {s.heading}\n{body}")
         parts.append("Sections already written (stay consistent with them):\n" + "\n\n".join(written))
     return "\n\n".join(parts)
@@ -49,7 +52,10 @@ def execute(request: str, plan: Plan) -> tuple[list[Section], dict, list[TaskRep
         lookups = [Task(id=0, title="Company records (added by the agent)", tool="lookup_mock_data",
                         instruction="Find the company records relevant to this request")]
         log.info("plan had no lookup task; the agent added one")
-    ordered = lookups + [t for t in plan.tasks if t.tool != "lookup_mock_data"]
+    # A summary is written last, from the finished sections, so it can't promise what they don't say;
+    # it still appears where the plan put it.
+    writing = [t for t in plan.tasks if t.tool != "lookup_mock_data"]
+    ordered = lookups + [t for t in writing if not is_summary(t.title)] + [t for t in writing if is_summary(t.title)]
     for n, task in enumerate(ordered, 1):
         started = time.perf_counter()
         context = build_context(request, plan, facts, sections)
@@ -68,4 +74,13 @@ def execute(request: str, plan: Plan) -> tuple[list[Section], dict, list[TaskRep
             reports.append(TaskReport(id=task.id, title=task.title, tool=task.tool, status="failed",
                                       note=f"{type(exc).__name__}: {str(exc)[:200]}"))
             log.warning("task %d/%d [%s] %s FAILED: %s", n, len(ordered), task.tool, task.title, exc)
+    position = {t.id: i for i, t in enumerate(plan.tasks)}
+    sections.sort(key=lambda s: position.get(s.task_id, len(position)))  # document order = the plan's order
+    reports.sort(key=lambda r: position.get(r.id, -1))
     return sections, facts, reports
+
+
+def is_summary(title: str) -> bool:
+    """'Executive Summary', 'Summary', 'Introduction': sections that sum up the others ('Discussion Summary' doesn't)."""
+    t = title.lower().strip()
+    return t in {"summary", "executive summary", "introduction", "overview"} or t.startswith("executive summary")

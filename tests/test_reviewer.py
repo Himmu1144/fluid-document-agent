@@ -55,7 +55,20 @@ def test_a_missing_budget_section_is_added_with_calculate_not_prose(monkeypatch)
     monkeypatch.setitem(reviewer.TOOLS, "calculate", lambda task, ctx: (used.append("calculate"), Section(task_id=task.id, heading=task.title))[1])
     monkeypatch.setitem(reviewer.TOOLS, "write_section", lambda task, ctx: (used.append("write_section"), Section(task_id=task.id, heading=task.title))[1])
     reviewer.self_check("req", PLAN, {}, [s.model_copy() for s in DRAFT], [])
-    assert used == ["calculate"]
+    assert used == ["calculate", "write_section"]  # the budget by calculate; then the summary is brought in line
+
+
+def test_after_a_fix_the_summary_is_updated_to_match(monkeypatch):
+    draft = [Section(task_id=1, heading="Summary", text="Six languages in 2 weeks."),
+             Section(task_id=2, heading="Actions", text="Scope: six languages.")]
+    monkeypatch.setattr(reviewer, "complete_json", lambda *a, **k: Review(passed=False, issues=[issue("Scope: six languages", "Actions")]))
+    seen = []
+    monkeypatch.setitem(reviewer.TOOLS, "make_table", lambda task, ctx: Section(task_id=task.id, heading=task.title, text="Scope: four languages."))
+    monkeypatch.setitem(reviewer.TOOLS, "write_section",
+                        lambda task, ctx: (seen.append(ctx), Section(task_id=task.id, heading=task.title, text="Four languages."))[1])
+    sections, check = reviewer.self_check("req", PLAN, {}, draft, [])
+    assert sections[0].text == "Four languages." and "four languages" in seen[0]   # rewritten from the FIXED section
+    assert check.fixes[-1].startswith("Updated \"Summary\"") and check.changes[-1].before == "Six languages in 2 weeks."
 
 
 def test_an_add_that_overlaps_an_existing_section_revises_it_instead(monkeypatch):

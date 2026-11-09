@@ -3,20 +3,20 @@
 After the draft is written, the agent reviews it against the request, like an editor would: is everything
 the request asked for covered, are the figures consistent between sections, does it contradict the facts?
 Each issue comes with a fix (add a section, or revise one), and the fixes are applied with the same writing
-tools. It is bounded on purpose: one review, at most three fixes, so cost and time stay predictable.
+tools. It is bounded on purpose: one review, at most five fixes, so cost and time stay predictable.
 """
 import json
 import logging
 import re
 
-from app.executor import build_context
+from app.executor import build_context, is_summary
 from app.llm import complete_json
 from app.models import Fix, Plan, Review, ReviewIssue, Section, SelfCheck, Task, TaskReport
 from app.tools import TOOLS
 
 log = logging.getLogger("agent.reviewer")
 
-MAX_FIXES = 3
+MAX_FIXES = 5  # the reviewer reports at most 5 issues, so every verified one can be fixed
 
 REVIEWER = """You are a strict senior reviewer checking a draft business document before it goes to a client.
 Check the draft against the request:
@@ -24,6 +24,8 @@ Check the draft against the request:
 2. Consistency: figures, dates, names and budgets agree between sections and with the company records.
 3. Honesty: conflicts in the request are acknowledged, not silently ignored.
 The agent adds the title page and an "Assumptions and open questions" section itself, so don't ask for those.
+The plan's resolutions of the conflicts are deliberate (for example a phased scope, or a total that is honestly
+over the budget and says so): don't report them as problems; do report sections that contradict them.
 Prefer revise_section: use add_section only when nothing in the draft covers the point, and never add a section that
 repeats or extends an existing one (revise that one instead).
 Report only real, specific problems (at most 5), each with a fix. For a problem in the draft, copy the exact words
@@ -100,6 +102,27 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
                                before=before, after=_as_text(redone)))
         except Exception as exc:
             log.warning("self-check: couldn't apply fix for %r: %s", issue.heading, exc)
+
+    # A fix can change the scope, timeline or budget, and then a summary written before it would contradict the
+    # fixed sections. So after any fix, the summary is brought in line (one more call; it isn't counted as a fix).
+    changed = {c.section.lower() for c in changes}
+    summary = next((i for i, s in enumerate(sections) if is_summary(s.heading) and s.heading.lower() not in changed), None)
+    if changes and summary is not None:
+        old = sections[summary]
+        planned = next((t for t in plan.tasks if t.id == old.task_id), None)
+        tool = planned.tool if planned and planned.tool in ("write_section", "make_table") else "write_section"
+        task = Task(id=old.task_id, title=old.heading, tool=tool,
+                    instruction="Rewrite this summary so it matches the sections already written exactly (scope, "
+                                "languages, timeline, budget); state nothing they don't.\n\nCurrent text:\n" + old.text)
+        try:
+            redone = TOOLS[tool](task, build_context(request, plan, facts, [s for i, s in enumerate(sections) if i != summary]))
+            redone.heading = old.heading
+            sections[summary] = redone
+            fixes.append(f"Updated \"{old.heading}\" to match the fixed sections")
+            changes.append(Fix(section=old.heading, problem="The fixes above changed sections this summary describes",
+                               before=_as_text(old), after=_as_text(redone)))
+        except Exception as exc:
+            log.warning("self-check: couldn't update %r after the fixes: %s", old.heading, exc)
     for f in fixes:
         log.info("self-check: %s", f)
 
