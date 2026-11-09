@@ -59,7 +59,7 @@ def test_a_missing_budget_section_is_added_with_calculate_not_prose(monkeypatch)
 
 
 def test_an_add_that_overlaps_an_existing_section_revises_it_instead(monkeypatch):
-    draft = [Section(task_id=1, heading="Summary", text="x"), Section(task_id=2, heading="Next Meeting", text="Thursday 12 Nov")]
+    draft = [Section(task_id=1, heading="Summary", text="x"), Section(task_id=7, heading="Next Meeting", text="Thursday 12 Nov")]
     monkeypatch.setattr(reviewer, "complete_json", lambda *a, **k: Review(passed=False, issues=[
         ReviewIssue(problem="agenda missing", evidence="", action="add_section", heading="Next Meeting – Agenda (proposed)", instruction="add agenda")]))
     monkeypatch.setitem(reviewer.TOOLS, "write_section", lambda task, ctx: Section(task_id=task.id, heading=task.title, text="with agenda"))
@@ -68,7 +68,7 @@ def test_an_add_that_overlaps_an_existing_section_revises_it_instead(monkeypatch
 
 
 def test_a_new_section_goes_before_the_closing_one(monkeypatch):
-    draft = [Section(task_id=1, heading="Summary", text="x"), Section(task_id=2, heading="Next steps", text="y")]
+    draft = [Section(task_id=1, heading="Summary", text="x"), Section(task_id=8, heading="Next steps", text="y")]
     monkeypatch.setattr(reviewer, "complete_json", lambda *a, **k: Review(passed=False, issues=[
         ReviewIssue(problem="no risks", evidence="", action="add_section", heading="Risks", instruction="add risks")]))
     monkeypatch.setitem(reviewer.TOOLS, "write_section", lambda task, ctx: Section(task_id=task.id, heading=task.title, text="r"))
