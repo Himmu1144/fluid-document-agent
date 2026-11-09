@@ -26,7 +26,8 @@ class AgentRequest(BaseModel):
 class Task(BaseModel):
     """One step of the agent's own TODO list."""
     id: int
-    title: str = Field(description="What this step produces, e.g. 'Budget breakdown'")
+    title: str = Field(description="The section heading exactly as it should appear in the document, e.g. 'Action items' "
+                                   "(a short noun phrase, not an instruction like 'Create action items table')")
     tool: ToolName
     instruction: str = Field(description="What the tool should do for this step")
 

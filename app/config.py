@@ -9,15 +9,19 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+# Each Groq model has its own free limit (8,000 tokens a minute), so several models are tried in turn.
+GROQ_MODELS = [m.strip() for m in os.getenv("GROQ_MODELS", "openai/gpt-oss-120b,openai/gpt-oss-20b,qwen/qwen3.8-27b").split(",") if m.strip()]
 
 # Generated Word documents are written here and served by GET /documents/{id}.
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# Which model is asked first; the rest are fallbacks, in order. Groq first: in a side-by-side it planned
-# as well as Gemini, 3-5x faster, and Gemini's free tier returned 503 "high demand" mid-test.
+# Which provider is asked first; the rest are fallbacks, in order. Groq first: in a side-by-side it planned
+# as well as Gemini, 3-5x faster, and Gemini's free tier allows only 5 requests a minute and 20 a day.
 LLM_ORDER = [p.strip() for p in os.getenv("LLM_ORDER", "groq,gemini").split(",") if p.strip()]
+
+# A model call that takes longer than this is abandoned and the next model is tried.
+LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "30"))
 
 # For testing the fallback: e.g. SKIP_PROVIDERS=gemini makes Groq answer.
 SKIP_PROVIDERS = {p.strip() for p in os.getenv("SKIP_PROVIDERS", "").split(",") if p.strip()}

@@ -23,8 +23,11 @@ Return only JSON with "heading" and "text" (and "table" only if asked)."""
 
 
 def lookup_mock_data(task: Task, context: str) -> dict:
-    """Plain Python, no LLM: returns the records whose tags match words in the task."""
-    words = set(re.findall(r"[a-z]+", f"{task.title} {task.instruction}".lower()))
+    """Plain Python, no LLM: returns the records whose tags match words in the task or the request.
+
+    The executor passes the request as `context` here, so "voice bot for our claims line" also finds the
+    voice platform and claims records even when the task itself is only called "Resource lookup"."""
+    words = set(re.findall(r"[a-z]+", f"{task.title} {task.instruction} {context}".lower()))
     found = {r["title"]: r["data"] for r in RECORDS if words & set(r["tags"])}
     log.info("lookup: %d record(s): %s", len(found), ", ".join(found) or "none")
     return found
