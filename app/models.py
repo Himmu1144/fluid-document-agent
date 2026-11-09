@@ -58,6 +58,8 @@ class Section(BaseModel):
 class ReviewIssue(BaseModel):
     """One problem the reviewer found, and what to do about it."""
     problem: str = Field(description="What is missing or wrong, quoting the request where relevant")
+    evidence: str = Field(default="", description="For a problem in the draft: the exact words copied from the draft that "
+                                                  "show it (verbatim, 3-15 words). Empty only for something entirely missing.")
     action: Literal["add_section", "revise_section"]
     heading: str = Field(description="The section to add, or the exact heading of the section to revise")
     instruction: str = Field(description="What the new or revised section must contain")
@@ -68,11 +70,21 @@ class Review(BaseModel):
     issues: list[ReviewIssue] = Field(default_factory=list, max_length=5)
 
 
+class Fix(BaseModel):
+    section: str
+    problem: str
+    evidence: str = ""
+    before: str = ""
+    after: str = ""
+
+
 class SelfCheck(BaseModel):
     """The reviewer's verdict on the draft (the agent's one engineering improvement)."""
     passed: bool
     issues: list[str] = Field(default_factory=list)
     fixes: list[str] = Field(default_factory=list, description="What was changed in response")
+    rejected: list[str] = Field(default_factory=list, description="Issues dropped because their quoted evidence isn't in the draft")
+    changes: list[Fix] = Field(default_factory=list, description="Before and after for every fix")
 
 
 class TaskReport(BaseModel):
