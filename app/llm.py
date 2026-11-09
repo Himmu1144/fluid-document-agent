@@ -71,7 +71,10 @@ def complete(system: str, prompt: str, want_json: bool = False) -> str:
 
 
 def complete_json(system: str, prompt: str, model: type[T]) -> T:
-    """Ask for JSON matching `model`. A malformed answer gets one retry, with the error shown to the model."""
+    """Ask for JSON matching `model`. A malformed answer gets one retry, with the error shown to the model.
+
+    The model's JSON schema is always attached here, so no caller can forget to say what shape it wants."""
+    system = f"{system}\n\nReturn only JSON matching this schema:\n{json.dumps(model.model_json_schema())}"
     text = complete(system, prompt, want_json=True)
     try:
         return model.model_validate_json(_strip_fences(text))

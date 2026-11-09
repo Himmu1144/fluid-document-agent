@@ -33,9 +33,7 @@ Rules:
 - Write 4 to 8 tasks, in the order the document should read. Each task produces one section.
 - For every task choose exactly one tool:
 {json.dumps(TOOLS, indent=2)}
-- Don't add tasks for a title page, an assumptions section or a self-review: the agent adds those itself.
-- Return only JSON that matches this schema:
-{json.dumps(Plan.model_json_schema())}"""
+- Don't add tasks for a title page, an assumptions section or a self-review: the agent adds those itself."""
 
 
 def make_plan(request: str) -> Plan:
