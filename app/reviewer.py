@@ -7,6 +7,7 @@ tools. It is bounded on purpose: one review, at most three fixes, so cost and ti
 """
 import json
 import logging
+import re
 
 from app.executor import build_context
 from app.llm import complete_json
@@ -24,14 +25,14 @@ Check the draft against the request:
 3. Honesty: conflicts in the request are acknowledged, not silently ignored.
 The agent adds the title page and an "Assumptions and open questions" section itself, so don't ask for those.
 Report only real, specific problems (at most 5), each with a fix. For a problem in the draft, copy the exact words
-that show it into "evidence" (verbatim from the draft); leave evidence empty only when something is entirely missing.
+that show it into "evidence" (verbatim from the draft, a few words from one sentence or one table row);
+leave evidence empty only when something is entirely missing.
 If the draft is good, return passed=true and no issues."""
 
 
 def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
                reports: list[TaskReport]) -> tuple[list[Section], SelfCheck]:
-    draft = "\n\n".join(f"## {s.heading}\n{s.text}" + (f"\n[table] {json.dumps(s.table.model_dump())}" if s.table else "")
-                        for s in sections)
+    draft = "\n\n".join(f"## {s.heading}\n{_as_text(s)}" for s in sections)  # tables as plain "a | b | c" rows
     try:
         review = complete_json(REVIEWER, f"Request:\n{request}\n\nConflicts the plan identified:\n"
                                          f"{json.dumps(plan.conflicts)}\n\nCompany records:\n{json.dumps(facts)}\n\n"
@@ -46,7 +47,7 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
     # The reviewer is a model too and can be wrong: an issue that quotes the draft must quote it truthfully.
     verified, rejected = [], []
     for issue in review.issues:
-        if issue.evidence and _normalise(issue.evidence) not in _normalise(draft):
+        if issue.evidence and not _quoted(issue.evidence, draft):
             rejected.append(f"{issue.problem} (quoted \"{issue.evidence}\", which isn't in the draft)")
             log.warning("self-check: dropped an unverified issue: %r is not in the draft", issue.evidence)
         else:
@@ -103,12 +104,21 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
                                fixes=fixes, rejected=rejected, changes=changes)
 
 
+def _quoted(evidence: str, draft: str) -> bool:
+    """True if the quote is in the draft. A quote with "..." (e.g. across table cells) counts if every piece is."""
+    text = _normalise(draft)
+    evidence = re.sub(r'"\s*,\s*"', " | ", evidence)  # "Status","Completed" → Status | Completed
+    pieces = [p.strip(" \"'|,:") for p in re.split(r"\.\.\.|…|\|", _normalise(evidence))]
+    pieces = [p for p in pieces if len(p) >= 3]
+    return bool(pieces) and all(p in text for p in pieces)
+
+
 def _normalise(text: str) -> str:
     """Compare quotes loosely: case, spacing, dashes and markdown don't count."""
-    text = text.lower().replace("**", "").replace("\u2011", "-").replace("\u2013", "-").replace("\u2014", "-")
+    text = re.sub(r"[\"“”‘’`]", "", text.lower().replace("**", "")).replace("\u2011", "-").replace("\u2013", "-").replace("\u2014", "-")
     return " ".join(text.replace("\u202f", " ").replace("\u00a0", " ").split())
 
 
 def _as_text(section: Section) -> str:
-    rows = "\n".join(" | ".join(r) for r in section.table.rows) if section.table else ""
+    rows = "\n".join(" | ".join(r) for r in [section.table.columns, *section.table.rows]) if section.table else ""
     return f"{section.text}\n{rows}".strip()

@@ -1,5 +1,6 @@
 """The agent: plan → execute → self-check → write the Word document."""
 import logging
+import re
 import time
 import uuid
 
@@ -22,7 +23,8 @@ def run(request: str) -> AgentResponse:
     sections, check = self_check(request, plan, facts, sections, reports)  # 3. review and fix its own draft
 
     doc_id = uuid.uuid4().hex[:12]
-    write_docx(config.OUTPUT_DIR / f"{doc_id}.docx", plan, sections, reports, check)  # 4. the Word document
+    slug = re.sub(r"[^a-z0-9]+", "-", plan.title.lower()).strip("-")[:60] or "document"
+    write_docx(config.OUTPUT_DIR / f"{slug}-{doc_id}.docx", plan, sections, reports, check)  # 4. the Word document
 
     seconds = round(time.perf_counter() - started, 1)
     done = sum(r.status == "done" for r in reports)
