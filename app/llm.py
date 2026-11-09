@@ -1,6 +1,6 @@
 """One way to call a language model, whichever provider answers.
 
-Providers are tried in the order set by LLM_ORDER (default Gemini, then Groq); if one fails or is
+Providers are tried in the order set by LLM_ORDER (default Groq, then Gemini); if one fails or is
 rate-limited, the next answers.
 `complete_json` also checks the answer against a Pydantic model and, if it doesn't fit,
 asks once more with the error attached, so the rest of the agent only ever sees valid data.

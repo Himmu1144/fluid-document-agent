@@ -15,8 +15,9 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# Which model is asked first; the rest are fallbacks, in order. Decided after comparing both.
-LLM_ORDER = [p.strip() for p in os.getenv("LLM_ORDER", "gemini,groq").split(",") if p.strip()]
+# Which model is asked first; the rest are fallbacks, in order. Groq first: in a side-by-side it planned
+# as well as Gemini, 3-5x faster, and Gemini's free tier returned 503 "high demand" mid-test.
+LLM_ORDER = [p.strip() for p in os.getenv("LLM_ORDER", "groq,gemini").split(",") if p.strip()]
 
 # For testing the fallback: e.g. SKIP_PROVIDERS=gemini makes Groq answer.
 SKIP_PROVIDERS = {p.strip() for p in os.getenv("SKIP_PROVIDERS", "").split(",") if p.strip()}
