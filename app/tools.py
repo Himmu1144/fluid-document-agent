@@ -19,6 +19,7 @@ log = logging.getLogger("agent.tools")
 WRITER = """You write one section of a polished business document for a bank and insurance company.
 Use the facts and earlier sections in the context; never invent names, dates or figures that contradict them.
 Be specific and concise: short paragraphs, and bullet points starting with "- " where they help.
+Write rupee amounts the Indian way (₹4.6 lakh, ₹1.2 crore, ₹85), never in millions.
 Return only JSON with "heading" and "text" (and "table" only if asked)."""
 
 

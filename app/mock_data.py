@@ -7,7 +7,7 @@ Each record has tags; the lookup tool returns the records whose tags match the t
 RECORDS = [
     {
         "id": "team-kyc",
-        "tags": ["kyc", "onboarding", "team", "people", "attendees", "members"],
+        "tags": ["kyc", "onboarding", "attendees", "sync"],
         "title": "KYC Onboarding team",
         "data": {
             "members": [
@@ -51,6 +51,20 @@ RECORDS = [
             "languages_not_supported": ["Bengali", "Telugu"],
             "note": "Each new language needs about 1 week of prompt tuning and testing with native speakers.",
             "integrations": ["Claims core system (REST API)", "CRM", "SMS gateway"],
+        },
+    },
+    {
+        "id": "team-ai",
+        "tags": ["ai", "voice", "bot", "engineering", "engineers", "team", "resources", "people", "staffing", "delivery"],
+        "title": "AI & Automation team (delivers voice and chat bots)",
+        "data": {
+            "members": [
+                {"name": "Arjun Rao", "role": "Engineering Manager, AI & Automation"},
+                {"name": "Meera Joshi", "role": "Senior ML Engineer (speech)"},
+                {"name": "Karan Desai", "role": "Backend Engineer (integrations)"},
+                {"name": "Fatima Shaikh", "role": "QA Engineer"},
+            ],
+            "availability": "Two engineers and one QA can start next week; the speech engineer is shared with another project at 50%.",
         },
     },
     {
