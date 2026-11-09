@@ -72,10 +72,11 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
     changes: list[Fix] = []
     for issue in list(merged.values())[:MAX_FIXES]:
         index = next((i for i, s in enumerate(sections) if s.heading.lower() == issue.heading.lower()), None)
-        planned = next((t for t in plan.tasks if t.title.lower() == issue.heading.lower()), None)
-        # A section is redone by the tool that made it: a wrong total is recomputed by `calculate` in Python,
-        # not papered over by rewriting the text around the old table.
-        tool = planned.tool if planned and planned.tool != "lookup_mock_data" else "write_section"
+        # A section is redone by the tool that made it (found by its task id): a wrong total is recomputed by
+        # `calculate` in Python, not papered over by rewriting the text. A new section gets the tool its content
+        # needs, and anything about money always goes to `calculate`, so the model never does arithmetic.
+        planned = next((t for t in plan.tasks if index is not None and t.id == sections[index].task_id), None)
+        tool = planned.tool if planned and planned.tool != "lookup_mock_data" else _tool_for(issue.heading)
         instruction = f"{issue.instruction}\n(Reviewer's reason: {issue.problem})"
         if index is not None and tool == "write_section":
             instruction += f"\n\nCurrent text to improve, keeping what is right:\n{sections[index].text}"
@@ -102,6 +103,15 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
     log.info("self-check: %s, %d issue(s), %d fix(es)", "passed" if passed else "found problems", len(issues), len(fixes))
     return sections, SelfCheck(passed=not issues and not skipped, issues=[i.problem for i in issues] + ([skipped] if skipped else []),
                                fixes=fixes, rejected=rejected, changes=changes)
+
+
+def _tool_for(heading: str) -> str:
+    h = heading.lower()
+    if any(w in h for w in ("budget", "cost", "price", "pricing", "estimate", "financial")):
+        return "calculate"
+    if any(w in h for w in ("table", "timeline", "schedule", "action items", "matrix", "rollout", "plan")):
+        return "make_table"
+    return "write_section"
 
 
 def _quoted(evidence: str, draft: str) -> bool:

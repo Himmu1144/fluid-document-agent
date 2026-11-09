@@ -46,3 +46,13 @@ def test_the_draft_survives_when_the_review_cannot_run(monkeypatch):
     monkeypatch.setattr(reviewer, "complete_json", down)
     sections, check = reviewer.self_check("req", PLAN, {}, list(DRAFT), [])
     assert sections == DRAFT and not check.passed and "could not run" in check.issues[0]
+
+
+def test_a_missing_budget_section_is_added_with_calculate_not_prose(monkeypatch):
+    used = []
+    monkeypatch.setattr(reviewer, "complete_json", lambda *a, **k: Review(passed=False, issues=[
+        ReviewIssue(problem="No cost breakdown", evidence="", action="add_section", heading="Budget Breakdown", instruction="Add it")]))
+    monkeypatch.setitem(reviewer.TOOLS, "calculate", lambda task, ctx: (used.append("calculate"), Section(task_id=task.id, heading=task.title))[1])
+    monkeypatch.setitem(reviewer.TOOLS, "write_section", lambda task, ctx: (used.append("write_section"), Section(task_id=task.id, heading=task.title))[1])
+    reviewer.self_check("req", PLAN, {}, [s.model_copy() for s in DRAFT], [])
+    assert used == ["calculate"]

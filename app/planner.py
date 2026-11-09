@@ -36,6 +36,7 @@ Rules:
 - If information is still missing, do not ask questions: make a reasonable assumption and list it under "assumptions".
 - If requirements conflict (for example a deadline that is too short for the scope), list each conflict under
   "conflicts" together with how the document will handle it.
+- If the request mentions a budget, cost or price, include a calculate task for it (never put figures in prose tasks).
 - Write 4 to 8 tasks, in the order the document should read. Each task produces one section.
 - For every task choose exactly one tool:
 {json.dumps(TOOLS, indent=2)}
