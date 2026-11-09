@@ -1,0 +1,110 @@
+[
+  {
+    "case": "minutes",
+    "category": "standard",
+    "status": 200,
+    "seconds": 71.4,
+    "llm_calls": 10,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 10
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": false,
+      "reason": "The document is not ready to send because it contains a formatting error where the 'Action items' section header is immediately followed by a 'Discussion' section, leaving the action items table orphaned and disconnected from the header, which would confuse readers."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Step 5 \"Discussion: RBI circular on periodic re-KYC\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+        "The draft omits the standard 'Attendees' and 'Apologies' sections, which are explicitly required in the source notes and necessary for accurate meeting minutes. The request implies a complete record of who was present and who was absent."
+      ],
+      "fixes": [
+        "Added \"Discussion: RBI circular on periodic re-KYC\": Step 5 \"Discussion: RBI circular on periodic re-KYC\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+        "Added \"Attendees\": The draft omits the standard 'Attendees' and 'Apologies' sections, which are explicitly required in the source notes and necessary for accurate meeting minutes. The request implies a complete record of who was present and who was absent."
+      ],
+      "rejected": [],
+      "changes": [
+        {
+          "section": "Discussion: RBI circular on periodic re-KYC",
+          "problem": "Step 5 \"Discussion: RBI circular on periodic re-KYC\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+          "evidence": "",
+          "before": "",
+          "after": "The team reviewed the recent RBI circular on periodic re-KYC. Rahul Mehta highlighted the need to update the bank's policy to comply with the new guidelines by 30 November. The group discussed the necessary changes to the current onboarding process and agreed to prioritize this update to ensure regulatory compliance."
+        },
+        {
+          "section": "Attendees",
+          "problem": "The draft omits the standard 'Attendees' and 'Apologies' sections, which are explicitly required in the source notes and necessary for accurate meeting minutes. The request implies a complete record of who was present and who was absent.",
+          "evidence": "",
+          "before": "",
+          "after": "The following members attended the weekly KYC onboarding sync:\n- Priya Nair (KYC Operations Lead, Chair)\n- Rahul Mehta (Compliance Officer)\n- Ananya Iyer (Product Manager, Digital Onboarding)\n- Vikram Singh (Onboarding Analyst)\n\nApologies were received from:\n- Sneha Kulkarni (IT Support Engineer), who was on leave."
+        }
+      ]
+    },
+    "detail": null
+  },
+  {
+    "case": "voicebot",
+    "category": "complex: conflicting + missing info",
+    "status": 200,
+    "seconds": 142.0,
+    "llm_calls": 4,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 3,
+      "groq/openai/gpt-oss-120b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": true,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": null,
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Step 3 \"Proposed Solution & Scope\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+        "Step 5 \"Timeline & Milestones\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+        "Step 8 \"Next Steps\" failed while drafting (LLMError: No language model answered: groq/openai/gpt-oss-120b: Error code: 429 )",
+        "The self-check could not run (LLMError); the draft was not reviewed."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "sop",
+    "category": "standard",
+    "status": 503,
+    "seconds": 15.4,
+    "llm_calls": 0,
+    "models": {},
+    "checks": {
+      "completed": false
+    },
+    "judge": null,
+    "self_check": null,
+    "detail": {
+      "detail": "No language model is available right now; please try again in a minute."
+    }
+  }
+]

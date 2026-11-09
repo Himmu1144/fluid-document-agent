@@ -1,6 +1,7 @@
 """One way to call a language model, whichever provider answers.
 
-Models are tried in order: each Groq model in GROQ_MODELS (each has its own free limit), then Gemini.
+Models are tried in order: each Groq model in GROQ_MODELS, then each Gemini model in GEMINI_MODELS
+(every model has its own free limits, per minute and per day).
 If one fails or is rate-limited, the next answers; if all are rate-limited, it waits 3 s and goes round once more.
 `complete_json` also checks the answer against a Pydantic model and, if it doesn't fit,
 asks once more with the error attached, so the rest of the agent only ever sees valid data.
@@ -26,11 +27,11 @@ class LLMError(RuntimeError):
     """Every provider failed."""
 
 
-def _gemini(system: str, prompt: str, want_json: bool) -> str:
+def _gemini(model: str, system: str, prompt: str, want_json: bool) -> str:
     client = genai.Client(api_key=config.GEMINI_API_KEY,
                           http_options=types.HttpOptions(timeout=config.LLM_TIMEOUT_S * 1000))  # milliseconds
     reply = client.models.generate_content(
-        model=config.GEMINI_MODEL,
+        model=model,
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction=system,
@@ -65,7 +66,7 @@ def _chain() -> list[tuple[str, Callable[[str, str, bool], str]]]:
         if provider == "groq":
             chain += [(f"groq/{m}", partial(_groq, m)) for m in config.GROQ_MODELS]
         elif provider == "gemini":
-            chain.append(("gemini", _gemini))
+            chain += [(f"gemini/{m}", partial(_gemini, m)) for m in config.GEMINI_MODELS]
     return chain
 
 
