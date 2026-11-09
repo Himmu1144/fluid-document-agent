@@ -1,0 +1,255 @@
+[
+  {
+    "case": "minutes",
+    "category": "standard",
+    "status": 200,
+    "seconds": 13.4,
+    "llm_calls": 10,
+    "models": {
+      "groq/openai/gpt-oss-120b": 5,
+      "groq/openai/gpt-oss-20b": 4,
+      "groq/qwen/qwen3.8-27b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": false,
+      "reason": "The document contains significant structural errors, including a duplicated 'Key Outcomes' section and a misplaced 'Assumptions' section that interrupts the Action Items table, making it unprofessional and requiring edits before sending."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Due date for adding temporary onboarding analysts is inconsistent with the agreed three‑week period; the draft lists 12 Dec 2026 while the meeting notes state a three‑week duration from 5 Nov.",
+        "The action item for fixing the Android upload bug is marked \"Completed\" even though the bug fix is scheduled for 12 Nov and has not yet been released.",
+        "The draft includes an action item to coordinate with the AI & Automation team for voice‑bot integration, but this was not discussed in the meeting notes or agenda.",
+        "The agenda in the \"Next Meeting\" section lists \"Discuss integration of AI‑driven reminders with the onboarding platform\" but the draft does not reflect any discussion or decision on this topic in the current meeting.",
+        "The draft repeats the backlog figure and turnaround time but does not explicitly state the target of 2 days; this target is implied but not clearly referenced."
+      ],
+      "fixes": [
+        "Redid \"Action Items\" with make_table: Due date for adding temporary onboarding analysts is inconsistent with the agreed three‑week period; the draft lists 12 Dec 2026 while the meeting notes state a three‑week duration from 5 Nov.",
+        "Added \"Next Meeting – Agenda (proposed)\": The agenda in the \"Next Meeting\" section lists \"Discuss integration of AI‑driven reminders with the onboarding platform\" but the draft does not reflect any discussion or decision on this topic in the current meeting.",
+        "Added \"Key Outcomes\": The draft repeats the backlog figure and turnaround time but does not explicitly state the target of 2 days; this target is implied but not clearly referenced."
+      ],
+      "rejected": [],
+      "changes": [
+        {
+          "section": "Action Items",
+          "problem": "Due date for adding temporary onboarding analysts is inconsistent with the agreed three‑week period; the draft lists 12 Dec 2026 while the meeting notes state a three‑week duration from 5 Nov.",
+          "evidence": "Add two temporary onboarding analysts for three weeks | Priya Nair | 12 Dec 2026 | Planned",
+          "before": "The following actions were agreed upon during the sync to address backlog, video‑KYC issues and regulatory compliance.\nAction Item | Owner | Due Date | Status\nFix Android upload bug in app release 4.12 | Ananya Iyer | 12 Nov 2026 | Completed\nUpdate policy for periodic re‑KYC per RBI circular | Rahul Mehta | 30 Nov 2026 | In progress\nAdd two temporary onboarding analysts for three weeks | Priya Nair | 12 Dec 2026 | Planned\nPilot auto‑reminder for incomplete applications | Vikram Singh | 19 Nov 2026 | Planned\nCoordinate with AI & Automation team for voice‑bot integration (optional) | Priya Nair | 31 Dec 2026 | Not started",
+          "after": "The following action items were agreed upon during the sync. Due dates and status have been updated to reflect the latest decisions.\nItem | Owner | Due | Status\nAdd two temporary onboarding analysts for three weeks | Priya Nair | 26 Nov 2026 | Planned\nPilot auto‑reminder for incomplete applications | Vikram Singh | 26 Nov 2026 | Planned\nConfirm Android upload bug fix in app release 4.12 | Ananya Iyer | 26 Nov 2026 | In progress\nDraft revised periodic re‑KYC policy | Rahul Mehta | 26 Nov 2026 | Planned"
+        },
+        {
+          "section": "Next Meeting – Agenda (proposed)",
+          "problem": "The agenda in the \"Next Meeting\" section lists \"Discuss integration of AI‑driven reminders with the onboarding platform\" but the draft does not reflect any discussion or decision on this topic in the current meeting.",
+          "evidence": "Discuss integration of AI‑driven reminders with the onboarding platform",
+          "before": "",
+          "after": "The following agenda item is optional and was not discussed in the current sync:\n- Discuss integration of AI‑driven reminders with the onboarding platform."
+        },
+        {
+          "section": "Key Outcomes",
+          "problem": "The draft repeats the backlog figure and turnaround time but does not explicitly state the target of 2 days; this target is implied but not clearly referenced.",
+          "evidence": "turnaround time slipped to 3.1 days vs the 2‑day target",
+          "before": "",
+          "after": "Backlog rose to 1,240 pending applications (up from 860) due to the Diwali campaign; turnaround time slipped to 3.1 days, exceeding the current KPI of a 2‑day target. Video KYC drop‑off identified at the document‑upload step on Android (18%); the Android upload bug will be fixed in app release 4.12, scheduled for 12 Nov. RBI circular on periodic re‑KYC requires policy revision by 30 Nov."
+        }
+      ]
+    },
+    "detail": null
+  },
+  {
+    "case": "voicebot",
+    "category": "complex: conflicting + missing info",
+    "status": 200,
+    "seconds": 21.9,
+    "llm_calls": 11,
+    "models": {
+      "groq/openai/gpt-oss-120b": 5,
+      "groq/openai/gpt-oss-20b": 3,
+      "groq/qwen/qwen3.8-27b": 3
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": true,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": null,
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Telephony and Speech/LLM usage cost figures are inconsistent – the cost estimate table uses 21,000 minutes, while the cost estimate section and earlier calculations use 4,200 calls (≈4,200 minutes).",
+        "The cost estimate table lists 20 language‑specialist days but the narrative states 4 specialists for 1 week each – the table’s quantity should reflect 4 specialists × 5 days, not a single 20‑day block.",
+        "The draft does not explicitly state that the total of six languages (English, Hindi, Marathi, Tamil, Bengali, Telugu) will be achieved, only that four new languages will be added after the pilot.",
+        "The project timeline table lists a pilot rollout on Friday of week 2, but the executive summary says core bot ready in 2 weeks – the table should indicate the pilot starts at the end of week 2, not during week 2."
+      ],
+      "fixes": [
+        "Redid \"Cost Estimate Calculation\" with calculate: Telephony and Speech/LLM usage cost figures are inconsistent – the cost estimate table uses 21,000 minutes, while the cost estimate section and earlier calculations use 4,200 calls (≈4,200 minutes).",
+        "Redid \"Scope and Objectives\" with write_section: The draft does not explicitly state that the total of six languages (English, Hindi, Marathi, Tamil, Bengali, Telugu) will be achieved, only that four new languages will be added after the pilot.",
+        "Redid \"Project Timeline\" with make_table: The project timeline table lists a pilot rollout on Friday of week 2, but the executive summary says core bot ready in 2 weeks – the table should indicate the pilot starts at the end of week 2, not during week 2."
+      ],
+      "rejected": [
+        "Timeline schedule contradicts phased rollout plan – the 2‑week schedule table assigns all four new languages to week 2, yet the executive summary and scope state languages will be added in subsequent weeks. (quoted \"Week | Day | Activity | Responsible\n2 | Mon‑Tue | Prompt tuning & testing for Marathi & Tamil | Language Specialists (2)\n2 | Wed‑Thu | Prompt tuning & testing for Bengali & Telugu | Language Specialists (2)\", which isn't in the draft)"
+      ],
+      "changes": [
+        {
+          "section": "Cost Estimate Calculation",
+          "problem": "Telephony and Speech/LLM usage cost figures are inconsistent – the cost estimate table uses 21,000 minutes, while the cost estimate section and earlier calculations use 4,200 calls (≈4,200 minutes).",
+          "evidence": "Telephony usage (pilot) | 21,000 minutes | ₹0.60 | ₹12,600\nSpeech & LLM usage (pilot) | 21,000 minutes | ₹1.40 | ₹29,400",
+          "before": "Estimate covers engineering, QA, project management, language‑specialist effort, and usage charges for telephony and speech/LLM based on internal rates, with a 10% contingency.\n\nThe total of ₹3,88,300 is within the stated budget of ₹5,00,000 (₹1,11,700 to spare).\nItem | Quantity | Unit cost | Amount\nEngineering (full‑time, 100% capacity) | 10 days | ₹9,000 | ₹90,000\nEngineering (shared, 50% capacity) | 5 days | ₹9,000 | ₹45,000\nQA Engineer | 10 days | ₹6,000 | ₹60,000\nProject Manager | 2 days | ₹8,000 | ₹16,000\nLanguage Specialist (Marathi, Tamil, Bengali, Telugu) | 20 days | ₹5,000 | ₹1,00,000\nTelephony usage (pilot) | 21,000 minutes | ₹0.60 | ₹12,600\nSpeech & LLM usage (pilot) | 21,000 minutes | ₹1.40 | ₹29,400\nContingency (10%) |  |  | ₹35,300\nTotal |  |  | ₹3,88,300",
+          "after": "The estimate covers the 2-week launch of the core voice bot, including engineering, QA, project management, and language specialist effort for the four additional languages, as well as projected telephony and speech/LLM usage for 4,200 bot-handled calls per month.\n\nThe total of ₹3,01,840 is within the stated budget of ₹5,00,000 (₹1,98,160 to spare).\nItem | Quantity | Unit cost | Amount\nEngineering effort (1 full-time + 1 half-time engineer) | 10 days | ₹9,000 | ₹90,000\nQA effort (1 QA engineer) | 10 days | ₹6,000 | ₹60,000\nProject management (planning and coordination) | 2 days | ₹8,000 | ₹16,000\nLanguage specialists (4 specialists × 5 days each) | 20 days | ₹5,000 | ₹1,00,000\nTelephony usage (4,200 calls × 1 minute average) | 4,200 minutes | ₹0.60 | ₹2,520\nSpeech and LLM usage (4,200 calls × 1 minute average) | 4,200 minutes | ₹1.40 | ₹5,880\nContingency (10%) |  |  | ₹27,440\nTotal |  |  | ₹3,01,840"
+        },
+        {
+          "section": "Scope and Objectives",
+          "problem": "The draft does not explicitly state that the total of six languages (English, Hindi, Marathi, Tamil, Bengali, Telugu) will be achieved, only that four new languages will be added after the pilot.",
+          "evidence": "Support initial languages: English and Hindi (ready now). Additional languages – Marathi, Tamil, Bengali, Telugu – will be added in a phased rollout after the 2‑week pilot.",
+          "before": "**Project Scope**\n- Deploy a voice bot on the existing in‑house stack (Deepgram STT, LLM dialogue, Twilio telephony) integrated with the Claims core system (REST API), CRM and SMS gateway.\n- Support initial languages: English and Hindi (ready now). Additional languages – Marathi, Tamil, Bengali, Telugu – will be added in a phased rollout after the 2‑week pilot.\n- Automate claim‑status inquiries, which constitute 61% of inbound calls, handling up to 10% of the 42,000 monthly calls during the pilot.\n\n**Measurable Objectives**\n- Reduce total monthly call volume handled by agents by 4,200 calls (10% of 42,000) within the first month of bot operation.\n- Decrease average wait time for callers by at least 2 minutes during peak periods (from 7 minutes to ≤5 minutes).\n- Achieve a per‑call cost reduction of approximately ₹85 for bot‑handled interactions, translating to a monthly savings of around ₹3.57 lakh.\n- Complete core bot deployment (English & Hindi) within 2 weeks; add each new language in subsequent 1‑week increments, reaching full six‑language support within 6 weeks.\n- Maintain service quality with ≥90% successful bot interactions as measured by post‑call surveys and error‑rate monitoring.",
+          "after": "**Project Scope**\n- Deploy a voice bot on the existing in-house stack (Deepgram STT, LLM dialogue, Twilio telephony) integrated with the Claims core system (REST API), CRM, and SMS gateway.\n- The final goal is to achieve full six-language support (English, Hindi, Marathi, Tamil, Bengali, and Telugu), aligning with the client's requirement.\n- Phase 1 (Weeks 1-2): Launch the core bot for English and Hindi, which are currently ready on the platform.\n- Phase 2 (Weeks 3-6): Add Marathi, Tamil, Bengali, and Telugu in a phased rollout, with each new language requiring one week of specialist tuning and testing.\n- Automate claim-status inquiries, which constitute 61% of inbound calls, handling up to 10% of the 42,000 monthly calls during the pilot.\n\n**Measurable Objectives**\n- Reduce total monthly call volume handled by agents by 4,200 calls (10% of 42,000) within the first month of bot operation.\n- Decrease average wait time for callers by at least 2 minutes during peak periods (from 7 minutes to ≤5 minutes).\n- Achieve a per-call cost reduction of approximately ₹85 for bot-handled interactions, translating to a monthly savings of around ₹3.57 lakh.\n- Complete core bot deployment (English & Hindi) within 2 weeks; add each new language in subsequent 1-week increments, reaching full six-language support within 6 weeks.\n- Maintain service quality with ≥90% successful bot interactions as measured by post-call surveys and error-rate monitoring."
+        },
+        {
+          "section": "Project Timeline",
+          "problem": "The project timeline table lists a pilot rollout on Friday of week 2, but the executive summary says core bot ready in 2 weeks – the table should indicate the pilot starts at the end of week 2, not during week 2.",
+          "evidence": "2 | Fri | Pilot rollout for English & Hindi | Engineer (100%) & Project Manager",
+          "before": "The following two‑week schedule outlines the critical activities required to launch the core voice bot for English and Hindi, and to prepare for the phased addition of the four new languages. Responsibilities are assigned to the available engineers, QA, language specialists, and the project manager.\nWeek | Day | Activity | Responsible\n1 | Mon | Kick‑off & planning (PM) | Project Manager\n1 | Mon‑Tue | Set up Deepgram, Twilio, LLM environment | Engineer (100%)\n1 | Wed‑Thu | Integrate Claims core API & CRM | Engineer (100%)\n1 | Fri | Initial functional testing (English/Hindi) | QA Engineer\n2 | Mon‑Tue | Prompt tuning & testing for Marathi & Tamil | Language Specialists (2)\n2 | Wed‑Thu | Prompt tuning & testing for Bengali & Telugu | Language Specialists (2)\n2 | Fri | End‑to‑end testing of core bot (English/Hindi) | QA Engineer\n2 | Fri | Pilot rollout for English & Hindi | Engineer (100%) & Project Manager\n2 | Fri | Review & handover documentation | Project Manager",
+          "after": "The project follows a phased approach to ensure the core English and Hindi bot is fully stable before introducing new languages. The pilot rollout begins immediately after the completion of Week 2, ensuring no overlap with core development tasks.\nPhase | Timeline | Key Activities | Deliverables\nPhase 1: Core Launch | Week 1 – Week 2 | - Engineering setup and integration with Claims/CRM\n- QA testing for English and Hindi flows\n- Final sign-off on core bot functionality | Core voice bot live in English and Hindi\nPilot Rollout | Week 3 (Start) | - Begin pilot with 10% of call volume\n- Monitor bot performance and error rates\n- Collect initial user feedback | Pilot data report and stability metrics\nPhase 2: Language Expansion | Week 3 – Week 6 | - Week 3–4: Tune and test Marathi and Tamil\n- Week 5–6: Tune and test Bengali and Telugu\n- Parallel specialist engagement for efficiency | Full six-language voice bot support"
+        }
+      ]
+    },
+    "detail": null
+  },
+  {
+    "case": "vague",
+    "category": "ambiguous",
+    "status": 200,
+    "seconds": 11.1,
+    "llm_calls": 10,
+    "models": {
+      "groq/openai/gpt-oss-120b": 7,
+      "groq/openai/gpt-oss-20b": 2,
+      "groq/qwen/qwen3.8-27b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": false,
+      "conflict_flagged": null,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": false,
+      "reason": "The document accurately reports the requested claims line data without contradicting records, but it is not ready to send because the cost impact table is mathematically incorrect (the total does not match the sum of components) and contains formatting errors (e.g., missing currency symbols in the table)."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Contingency cost calculation is inconsistent with the 10% contingency rate specified in company records."
+      ],
+      "fixes": [
+        "Redid \"Cost impact calculation\" with calculate: Contingency cost calculation is inconsistent with the 10% contingency rate specified in company records."
+      ],
+      "rejected": [],
+      "changes": [
+        {
+          "section": "Cost impact calculation",
+          "problem": "Contingency cost calculation is inconsistent with the 10% contingency rate specified in company records.",
+          "evidence": "Contingency (10%) |  |  | ₹46,41,000",
+          "before": "The estimate covers the monthly and annual cost of handling claims‑line calls based on the current volume of 42,000 calls per month and the internal cost rate of ₹85 per call.\nItem | Quantity | Unit cost | Amount\nMonthly call handling cost | 42,000 calls | ₹85 | ₹35,70,000\nAnnual call handling cost | 5,04,000 calls | ₹85 | ₹4,28,40,000\nContingency (10%) |  |  | ₹46,41,000\nTotal |  |  | ₹5,10,51,000",
+          "after": "This estimate shows the annual cost of handling claims line calls and the 10% contingency applied to that cost.\nItem | Quantity | Unit cost | Amount\nAnnual call handling cost | 1 Annual | ₹4,28,40,000 | ₹4,28,40,000\nContingency (10%) | 1 Annual | ₹42,84,000 | ₹42,84,000\nContingency (10%) |  |  | ₹47,12,400\nTotal |  |  | ₹5,18,36,400"
+        }
+      ]
+    },
+    "detail": null
+  },
+  {
+    "case": "sop",
+    "category": "standard",
+    "status": 200,
+    "seconds": 17.2,
+    "llm_calls": 12,
+    "models": {
+      "groq/openai/gpt-oss-120b": 5,
+      "groq/openai/gpt-oss-20b": 3,
+      "groq/qwen/qwen3.8-27b": 4
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": false,
+      "reason": "The document fails the 'ready to send' check because it contains a significant internal contradiction regarding the Level 1 escalation timeline (stating 4 hours in one section and 1 hour in another) and includes a 'Roles and responsibilities matrix' header with no corresponding table content, making it incomplete and inconsistent."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "The responsibility for detecting drop‑off is incorrectly assigned to Vikram Singh in the matrix, while the procedure states it is a system flag.",
+        "The review timing for flagged sessions is inconsistent: the procedure says analysts review every hour, but the escalation path says within 4 hours of the reminder.",
+        "The SOP references the AI & Automation team only in a monthly review, but does not detail how bot‑driven interventions will be coordinated during the three‑week window."
+      ],
+      "fixes": [
+        "Redid \"Roles and responsibilities matrix\" with make_table: The responsibility for detecting drop‑off is incorrectly assigned to Vikram Singh in the matrix, while the procedure states it is a system flag.",
+        "Added \"Procedure steps / Escalation Path\": The review timing for flagged sessions is inconsistent: the procedure says analysts review every hour, but the escalation path says within 4 hours of the reminder.",
+        "Added \"Bot‑Driven Interventions\": The SOP references the AI & Automation team only in a monthly review, but does not detail how bot‑driven interventions will be coordinated during the three‑week window."
+      ],
+      "rejected": [
+        "The SOP does not address the RBI circular on periodic re‑KYC that needs policy update by 30 Nov, as noted in the sync notes. (quoted \"Rahul: the RBI circular on periodic re‑KYC needs our policy updated by 30 Nov.\", which isn't in the draft)",
+        "The SOP does not specify the number of temporary analysts to be onboarded, though the sync notes mention two analysts for three weeks. (quoted \"Scope: - Applies to the KYC Onboarding Team and any temporary analysts onboarded for the three‑week backlog‑clearance period.\", which isn't in the draft)"
+      ],
+      "changes": [
+        {
+          "section": "Roles and responsibilities matrix",
+          "problem": "The responsibility for detecting drop‑off is incorrectly assigned to Vikram Singh in the matrix, while the procedure states it is a system flag.",
+          "evidence": "Detect drop‑off | Vikram Singh | Analyst execution – monitor alerts and log details",
+          "before": "The matrix below aligns each SOP step with the designated team member and their specific responsibility to ensure clear ownership throughout the Video KYC drop‑off handling process.\nProcedure Step | Responsible Person | Role\nDetect drop‑off | Vikram Singh | Analyst execution – monitor alerts and log details\nTrigger automated reminder | Ananya Iyer | Product liaison – ensure push/SMS logic follows version rules\nSend in‑app update notice (pre‑4.12) | Sneha Kulkarni | IT support – configure notification content\nCompliance verification of completed uploads | Rahul Mehta | Compliance check – validate documents against RBI guidelines\nOversight and escalation | Priya Nair | KYC Operations Lead – overall supervision and issue escalation",
+          "after": "The following matrix outlines the specific responsibilities of the KYC Onboarding Team and support functions in managing Video KYC drop-offs. Note that the initial detection of drop-offs is handled automatically by the monitoring system, not by an individual analyst.\nProcess Step | Responsible Person/Role | Key Actions\nDetect drop-off | System/Monitoring Team | Automatically flags sessions inactive at the upload step for >10 minutes; logs customer ID and device version.\nTrigger automated reminder | System (Auto-reminder Pilot) | Sends in-app push/SMS within 15 minutes; includes app update guidance for versions <4.12.\nAnalyst Review (Level 1) | Vikram Singh / Temporary Analysts | Reviews flagged sessions within 4 hours; attempts manual contact or guidance if customer is unresponsive.\nEscalation (Level 2) | Priya Nair (KYC Operations Lead) | Reviews daily summary of unresolved cases; assigns senior analyst or directs to IT Support.\nIT Support / Bug Fix | Sneha Kulkarni (IT Support Engineer) | Coordinates with Product Team (Ananya Iyer) to ensure app release 4.12 deployment and troubleshoot persistent upload failures.\nCompliance & Policy | Rahul Mehta (Compliance Officer) | Ensures re-KYC processes align with RBI circulars; validates that drop-off remediation does not compromise regulatory standards."
+        },
+        {
+          "section": "Procedure steps / Escalation Path",
+          "problem": "The review timing for flagged sessions is inconsistent: the procedure says analysts review every hour, but the escalation path says within 4 hours of the reminder.",
+          "evidence": "Level 1 – Analyst Review ... review flagged sessions within 4 hours of the reminder.",
+          "before": "",
+          "after": "The escalation path for unresolved Video KYC drop-offs follows a strict timeline to ensure rapid intervention:\n\n- **Level 1 – Analyst Review**: Temporary analysts must review flagged sessions within 1 hour of the automated reminder being sent. If the customer has not responded or the upload failure persists after this initial check, the case is marked for escalation.\n- **Level 2 – Operations Lead Escalation**: If the issue remains unresolved, the case is escalated to Priya Nair (KYC Operations Lead) within 4 hours of the initial flag. She will assign a senior analyst or direct the case to IT Support for immediate technical resolution."
+        },
+        {
+          "section": "Bot‑Driven Interventions",
+          "problem": "The SOP references the AI & Automation team only in a monthly review, but does not detail how bot‑driven interventions will be coordinated during the three‑week window.",
+          "evidence": "Includes the use of Android app release version 4.12, which contains the bug‑fix for the upload issue.",
+          "before": "",
+          "after": "The AI & Automation team will deploy voice and chat bots to assist customers who fail to upload documents after manual follow-up. This intervention is triggered when a case remains unresolved after the Level 1 Analyst Review.\n\n- **Trigger**: A bot session initiates automatically if the customer has not completed the upload within 24 hours of the initial flag.\n- **Responsibilities**: Arjun Rao (Engineering Manager) oversees deployment, while Meera Joshi (Senior ML Engineer) manages the speech interface. Karan Desai (Backend Engineer) handles integration with the KYC system.\n- **Integration**: Bots connect to the KYC dashboard to fetch customer details and update status in real-time. They guide users through the upload process or schedule a callback for manual assistance.\n- **Timeline**: Bot support becomes active immediately upon SOP approval, coinciding with the onboarding of temporary analysts. Fatima Shaikh (QA Engineer) will monitor bot performance daily during the three-week window to ensure accuracy and responsiveness."
+        }
+      ]
+    },
+    "detail": null
+  }
+]

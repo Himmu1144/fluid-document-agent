@@ -1,0 +1,142 @@
+[
+  {
+    "case": "minutes",
+    "category": "standard",
+    "status": 200,
+    "seconds": 57.5,
+    "llm_calls": 7,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 3,
+      "gemini": 4
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": true,
+      "reason": "The document accurately reflects the meeting notes, attendees, and action items from the company records, and the inclusion of assumptions is consistent with the calibration guidelines."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "voicebot",
+    "category": "complex: conflicting + missing info",
+    "status": 200,
+    "seconds": 65.4,
+    "llm_calls": 4,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 3,
+      "groq/openai/gpt-oss-20b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": true,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": null,
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "vague",
+    "category": "ambiguous",
+    "status": 200,
+    "seconds": 58.9,
+    "llm_calls": 6,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 6
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": null,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": true,
+      "reason": "The report accurately reflects the provided company records (42,000 calls, 35 agents, 61% status checks, 7 min wait, ₹85/call) and provides a structured analysis with recommendations and assumptions as requested."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "sop",
+    "category": "standard",
+    "status": 200,
+    "seconds": 57.7,
+    "llm_calls": 5,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 5
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": null,
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  }
+]

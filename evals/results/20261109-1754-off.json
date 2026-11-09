@@ -1,0 +1,157 @@
+[
+  {
+    "case": "minutes",
+    "category": "standard",
+    "status": 200,
+    "seconds": 9.2,
+    "llm_calls": 7,
+    "models": {
+      "groq/openai/gpt-oss-120b": 2,
+      "groq/openai/gpt-oss-20b": 3,
+      "groq/qwen/qwen3.8-27b": 2
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": true,
+      "reason": "The document accurately reflects the company records regarding attendees, agenda items, metrics, and action items, and is formatted correctly as meeting minutes."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "voicebot",
+    "category": "complex: conflicting + missing info",
+    "status": 200,
+    "seconds": 54.4,
+    "llm_calls": 10,
+    "models": {
+      "groq/openai/gpt-oss-20b": 1,
+      "groq/qwen/qwen3.8-27b": 7,
+      "gemini": 2
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": true,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": false,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": false,
+      "reason": "The document fails to answer the request because it explicitly states that Bengali and Telugu will be added in a subsequent phase, thereby not meeting the mandatory requirement to support 6 languages at launch, and it is not ready to send because the cost breakdown table contains a mathematical error (the listed line items sum to approximately ₹4.27L, not the stated total of ₹4.69L)."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "vague",
+    "category": "ambiguous",
+    "status": 200,
+    "seconds": 27.4,
+    "llm_calls": 6,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 5,
+      "groq/openai/gpt-oss-120b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": true,
+      "conflict_flagged": null,
+      "budget_adds_up": true,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": true,
+      "reason": "The report accurately reflects the provided company records for call volume, composition, wait times, staffing, and cost per call, and includes a clearly labeled assumptions section for the estimated agent salaries, making it suitable for internal distribution."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  },
+  {
+    "case": "sop",
+    "category": "standard",
+    "status": 200,
+    "seconds": 62.1,
+    "llm_calls": 7,
+    "models": {
+      "groq/qwen/qwen3.8-27b": 5,
+      "gemini": 1,
+      "groq/openai/gpt-oss-20b": 1
+    },
+    "checks": {
+      "completed": true,
+      "all_steps_done": false,
+      "used_lookup": true,
+      "grounded_facts": true,
+      "assumptions_stated": null,
+      "conflict_flagged": null,
+      "budget_adds_up": null,
+      "no_forbidden_output": null,
+      "docx_has_sections": true
+    },
+    "judge": {
+      "answers_the_request": true,
+      "contradicts_the_records": false,
+      "ready_to_send": true,
+      "reason": "The document is a well-structured SOP that accurately reflects the company records regarding the Android drop-off issue, team roles, and upcoming app release, while appropriately flagging assumptions."
+    },
+    "self_check": {
+      "passed": false,
+      "issues": [
+        "Self-check switched off (SELF_CHECK=0)."
+      ],
+      "fixes": [],
+      "rejected": [],
+      "changes": []
+    },
+    "detail": null
+  }
+]

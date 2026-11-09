@@ -24,6 +24,8 @@ Check the draft against the request:
 2. Consistency: figures, dates, names and budgets agree between sections and with the company records.
 3. Honesty: conflicts in the request are acknowledged, not silently ignored.
 The agent adds the title page and an "Assumptions and open questions" section itself, so don't ask for those.
+Prefer revise_section: use add_section only when nothing in the draft covers the point, and never add a section that
+repeats or extends an existing one (revise that one instead).
 Report only real, specific problems (at most 5), each with a fix. For a problem in the draft, copy the exact words
 that show it into "evidence" (verbatim from the draft, a few words from one sentence or one table row);
 leave evidence empty only when something is entirely missing.
@@ -72,6 +74,8 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
     changes: list[Fix] = []
     for issue in list(merged.values())[:MAX_FIXES]:
         index = next((i for i, s in enumerate(sections) if s.heading.lower() == issue.heading.lower()), None)
+        if index is None:  # "add" a section that overlaps an existing one → revise that one instead of duplicating it
+            index = next((i for i, s in enumerate(sections) if _overlaps(s.heading, issue.heading)), None)
         # A section is redone by the tool that made it (found by its task id): a wrong total is recomputed by
         # `calculate` in Python, not papered over by rewriting the text. A new section gets the tool its content
         # needs, and anything about money always goes to `calculate`, so the model never does arithmetic.
@@ -90,7 +94,7 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
                 sections[index] = redone
                 fixes.append(f"Redid \"{redone.heading}\" with {tool}: {issue.problem}")
             else:
-                sections.append(redone)
+                sections.insert(_new_section_position(sections), redone)
                 fixes.append(f"Added \"{redone.heading}\": {issue.problem}")
             changes.append(Fix(section=redone.heading, problem=issue.problem, evidence=issue.evidence,
                                before=before, after=_as_text(redone)))
@@ -103,6 +107,24 @@ def self_check(request: str, plan: Plan, facts: dict, sections: list[Section],
     log.info("self-check: %s, %d issue(s), %d fix(es)", "passed" if passed else "found problems", len(issues), len(fixes))
     return sections, SelfCheck(passed=not issues and not skipped, issues=[i.problem for i in issues] + ([skipped] if skipped else []),
                                fixes=fixes, rejected=rejected, changes=changes)
+
+
+STOPWORDS = {"and", "the", "of", "for", "a", "an", "to", "&", "–", "-", "on", "in", "proposed"}
+CLOSING = ("next step", "next meeting", "conclusion", "approval", "sign-off", "way forward")
+
+
+def _overlaps(existing: str, new: str) -> bool:
+    """'Next Meeting – Agenda (proposed)' overlaps 'Next Meeting': most of the existing heading's words reappear."""
+    words = lambda h: {w for w in re.findall(r"[a-z]+", h.lower()) if w not in STOPWORDS}
+    old, fresh = words(existing), words(new)
+    return bool(old) and len(old & fresh) / len(old) >= 0.6
+
+
+def _new_section_position(sections: list[Section]) -> int:
+    """New sections go before a closing section like 'Next steps', not after it."""
+    if sections and any(c in sections[-1].heading.lower() for c in CLOSING):
+        return len(sections) - 1
+    return len(sections)
 
 
 def _tool_for(heading: str) -> str:
